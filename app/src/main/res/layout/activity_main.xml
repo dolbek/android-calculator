@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="3">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_weight="1">
+
+        <Button
+            android:id="@+id/button1_1"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button1_2"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button1_3"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button1_4"
+            style="@style/calculatorButton"
+            android:text="Button" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_weight="1">
+
+        <Button
+            android:id="@+id/button2_1"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button2_2"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button2_3"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button2_4"
+            style="@style/calculatorButton"
+            android:text="Button" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_weight="1">
+
+        <Button
+            android:id="@+id/button3_1"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button3_2"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button3_3"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button3_4"
+            style="@style/calculatorButton"
+            android:text="Button" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_weight="1">
+
+        <Button
+            android:id="@+id/button4_1"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button4_2"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button4_3"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button4_4"
+            style="@style/calculatorButton"
+            android:text="Button" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_weight="1">
+
+        <Button
+            android:id="@+id/button5_1"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button5_2"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button5_3"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button5_4"
+            style="@style/calculatorButton"
+            android:text="Button" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_weight="1">
+
+        <Button
+            android:id="@+id/button6_1"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button6_2"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button6_3"
+            style="@style/calculatorButton"
+            android:text="Button" />
+
+        <Button
+            android:id="@+id/button6_4"
+            style="@style/calculatorButton"
+            android:text="Button" />
+    </TableRow>
+
+</TableLayout>
