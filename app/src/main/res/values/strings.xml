@@ -1,3 +1,43 @@
 <resources>
     <string name="app_name">Calculator</string>
+
+    <string-array name="buttonText">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>.</item>
+        <item>+/-</item>
+        <item>(</item>
+        <item>)</item>
+        <item>+</item>
+        <item>-</item>
+        <item>×</item>
+        <item>÷</item>
+        <item>=</item>
+        <item>^</item>
+        <item>√</item>
+        <item>CLEAR</item>
+        <item>DEL</item>
+        <item>RUN</item>
+        <item>M</item>
+        <item>M+</item>
+        <item>M-</item>
+        <item>MR</item>
+    </string-array>
+
+    <string-array name="errorMessages">
+        <item>No Error</item>
+        <item>Invalid input.</item>
+        <item>Division by zero.</item>
+        <item>Square root of a negative number.</item>
+        <item>Error.</item>
+        <item>Uncaught error type.</item>
+    </string-array>
 </resources>
