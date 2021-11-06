@@ -52,6 +52,7 @@
         android:layout_weight="1"
         android:gravity="right|center_vertical"
         android:textColor="@color/slate"
+        android:maxLines="1"
         android:textSize="40sp" />
 
 

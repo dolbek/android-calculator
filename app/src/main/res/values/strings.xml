@@ -42,6 +42,7 @@
         <item>Division by zero.</item>
         <item>Square root of a negative number.</item>
         <item>Error.</item>
+        <item>Invalid memory value.</item>
         <item>Uncaught error type.</item>
     </string-array>
 

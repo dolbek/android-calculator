@@ -118,7 +118,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(view.getId() == R.id.buttonEqual) {
             //Perform the calculation
-            result = calculator.calculate(calculationString);
+            if(calculationString != "")
+                result = calculator.calculate(calculationString);
+            else if(result == "")
+                result = "0";
             setDisplay(result);
             calculationString = "";
         }
@@ -264,8 +267,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case other:
                     errorString = errorMessages[4];
                     break;
-                default:
+                case memory:
                     errorString = errorMessages[5];
+                    break;
+                default:
+                    errorString = errorMessages[6];
             }
             totalDisplay.setText(ERR);
             Context context = getApplicationContext();

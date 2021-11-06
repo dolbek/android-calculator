@@ -7,7 +7,10 @@ import java.text.NumberFormat;
 import java.util.EmptyStackException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Stack;
+
+import dalvik.system.DexClassLoader;
 
 public class Calculator {
 
@@ -17,7 +20,7 @@ public class Calculator {
 
     //Enums for order of operations and error types
     enum Order {regular, running}
-    enum ErrorType {none, input, divZero, negSqrt, other}
+    enum ErrorType {none, input, divZero, negSqrt, other, memory}
 
     private ErrorType errorType;
     private Order order;
@@ -266,6 +269,25 @@ public class Calculator {
                 else
                     postfix.add(Character.toString(c));
             }
+            //Handle scientific notation. Skips over the "E+" in "x E+ y". The "x" is
+            //already in the list. Adds 10 as the next entry, followed by "y", followed by
+            //"^" and "*". Final result is adding the infix expression "x E+ y" as the postfix
+            //expression "x 10 y ^ *" which evaluates correctly.
+            else if(c == 'e' || c == 'E') {
+                postfix.add("10");
+                int j = i+2;
+                if(j < length && (Character.isDigit(str.charAt(j)) || str.charAt(j) == '.')) {
+                    while (j < length && (Character.isDigit(str.charAt(j)) || str.charAt(j) == '.'))
+                        j++;
+                    String number = str.substring(i+2, j);
+                    i = j-1;
+                    postfix.add(number);
+                }
+                else
+                    postfix.add(Character.toString(c));
+                postfix.add("^");
+                postfix.add(Character.toString(mult));
+            }
             //Open parentheses are pushed onto the stack
             else if(c == '(')
                 stack.push(c);
@@ -330,33 +352,58 @@ public class Calculator {
         format.setRoundingMode(RoundingMode.HALF_UP);
         format.setMinimumFractionDigits((number.scale() < 0) ? number.precision() : number.scale());
 
+        NumberFormat formatAlt = new DecimalFormat("0.0");
+        formatAlt.setRoundingMode(RoundingMode.HALF_UP);
+
         if(number.precision() > maxDecimals)
             return format.format(number);
+        else if(number.scale() > maxDecimals)
+            return formatAlt.format(number);
         else
-            return number.toPlainString();
+            return number.toString();
     }
 
     //Sets the given number in memory
     public void setMemory(String str) {
-        memory = BigDecimal.valueOf(Double.parseDouble(calculate(str)));
-        memoryModified = true;
+        if(isNumber(str)) {
+            memory = new BigDecimal(str);
+            memoryModified = true;
+        }
+        else {
+            errorType = ErrorType.memory;
+            isError = true;
+        }
     }
 
     //Returns the number in memory
     public String getMemory() {
-        return formatBigDecimal(memory);
+        return memory.toString();
     }
 
     //Adds the given number to the number stored in memory
     public void memoryAdd(String str) {
-        memory = memory.add(BigDecimal.valueOf(Double.parseDouble(calculate(str))));
-        memoryModified = true;
+        if(isNumber(str)) {
+            BigDecimal number = new BigDecimal(str);
+            memory = memory.add(number);
+            memoryModified = true;
+        }
+        else {
+            errorType = ErrorType.memory;
+            isError = true;
+        }
     }
 
     //Subtracts the given number from the number in memory
     public void memorySub(String str) {
-        memory = memory.subtract(BigDecimal.valueOf(Double.parseDouble(calculate(str))));
-        memoryModified = true;
+        if(isNumber(str)) {
+            BigDecimal number = new BigDecimal(str);
+            memory = memory.subtract(number);
+            memoryModified = true;
+        }
+        else {
+            errorType = ErrorType.memory;
+            isError = true;
+        }
     }
 
     //Returns true if something has been stored in memory
