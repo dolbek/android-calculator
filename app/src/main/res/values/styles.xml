@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-
     <style name="calculatorButton" android:shapes="rectangle">
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
@@ -10,14 +9,10 @@
         <item name="android:insetRight">2dp</item>
         <item name="cornerRadius">0dp</item>
         <item name="borderWidth">5dp</item>
-        <item name="android:textColor">@color/slate</item>
+        <item name="android:textColor">@drawable/button_text_color</item>
         <item name="backgroundTint">@null</item>
         <item name="android:background">@drawable/button_backgrounds</item>
         <item name="android:layout_margin">2dp</item>
         <item name="android:actionModeBackground">@drawable/gradient_button_click</item>
-
-
-
     </style>
-
 </resources>

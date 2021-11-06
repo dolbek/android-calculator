@@ -17,17 +17,19 @@ public class Calculator {
 
     //Enums for order of operations and error types
     enum Order {regular, running}
-    enum ErrorType {none, input, divZero, negSqrt, other};
+    enum ErrorType {none, input, divZero, negSqrt, other}
 
     private ErrorType errorType;
     private Order order;
     private int maxDecimals;
     private BigDecimal memory;
 
+    //Various state flags
     private boolean isError = false;
     private boolean memoryModified = false;
     private boolean disregardCalc = false;
 
+    //Constructor
     public Calculator(int maxDec, char m, char d, char sq) {
         maxDecimals = maxDec;
         errorType = ErrorType.none;
@@ -38,6 +40,8 @@ public class Calculator {
         memory = BigDecimal.ZERO;
     }
 
+    //Converts string input to a postfix list, and passes it
+    //to the calculation method.
     public String calculate(String calc) {
         BigDecimal result = calculate(generatePostfix(calc));
         if(disregardCalc) {
@@ -49,7 +53,7 @@ public class Calculator {
     }
 
 
-    //Performs the calculation on the postfix expression
+    //Performs evaluation of a postfix expression
     private BigDecimal calculate(List<String> postfix) {
 
         BigDecimal finalResult;
@@ -93,9 +97,8 @@ public class Calculator {
                     LinkedList<String> subListC;
                     String lastOperator = "";
 
-                    subListA = new LinkedList<String>(postfix.subList(0, i-1));
-                    subListB = new LinkedList<String>(postfix.subList(i-1, i+1));
-
+                    subListA = new LinkedList<>(postfix.subList(0, i-1));
+                    subListB = new LinkedList<>(postfix.subList(i-1, i+1));
 
                     //If the first half is greater than three items, there will be one operator
                     //that needs to be moved to the end of the expression.
@@ -116,10 +119,8 @@ public class Calculator {
                     //a third list, to be added back one the square root in the middle has been
                     //evaluated.
                     if(postfix.size() > i+1) {
-                        subListC = new LinkedList<String>(postfix.subList(i + 1, postfix.size()));
-                        for (String str : subListC) {
-                            subListA.add(str);
-                        }
+                        subListC = new LinkedList<>(postfix.subList(i + 1, postfix.size()));
+                        subListA.addAll(subListC);
                     }
 
                     //Push the result onto the stack. This set of operations bypasses the regular
@@ -140,7 +141,7 @@ public class Calculator {
                     else {
                         //Calculate square root
                         BigDecimal x0 = BigDecimal.ZERO;
-                        BigDecimal x1 = new BigDecimal(Math.sqrt(op1.doubleValue()));
+                        BigDecimal x1 = BigDecimal.valueOf(Math.sqrt(op1.doubleValue()));
                         while (!x0.equals(x1)) {
                             x0 = x1;
                             x1 = op1.divide(x0, maxDecimals + 1, RoundingMode.HALF_UP);
@@ -159,7 +160,7 @@ public class Calculator {
             //If there is an operator, pop two operands off the stack and
             //perform the calculation.
             else {
-                Character c = item.charAt(0);
+                char c = item.charAt(0);
                 try {
                     op2 = stack.pop();
                     op1 = stack.pop();
@@ -224,7 +225,7 @@ public class Calculator {
     }
 
     //Converts the given infix notation expression to postfix
-    // and returns the result in a linked list.
+    //and returns the result in a linked list.
     private LinkedList<String> generatePostfix(String str) {
 
         //The list to store the infix expression
@@ -244,7 +245,7 @@ public class Calculator {
         //postfix list.
         for(int i = 0; i < length; i++)
         {
-            Character c = str.charAt(i);
+            char c = str.charAt(i);
 
             //If a character is a digit that is followed by more digits, (ie a multi-digit
             //number) it is divided into a substring to be added to the list as a whole.
@@ -255,7 +256,7 @@ public class Calculator {
             if(Character.isDigit(c) || c == '.' || (c == '-' && (i == 0 || !Character.isDigit(str.charAt(i-1)))))
             {
                 int j = i+1;
-                if(j < length && (Character.isDigit(str.charAt(j)) || Character.compare(str.charAt(j), '.') == 0)) {
+                if(j < length && (Character.isDigit(str.charAt(j)) || str.charAt(j) == '.')) {
                     while (j < length && (Character.isDigit(str.charAt(j)) || str.charAt(j) == '.'))
                         j++;
                     String number = str.substring(i, j);
@@ -263,7 +264,7 @@ public class Calculator {
                     postfix.add(number);
                 }
                 else
-                    postfix.add(c.toString());
+                    postfix.add(Character.toString(c));
             }
             //Open parentheses are pushed onto the stack
             else if(c == '(')
