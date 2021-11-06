@@ -27,7 +27,7 @@
         <item>=</item>
         <item>^</item>
         <item>√</item>
-        <item>CLEAR</item>
+        <item>C</item>
         <item>DEL</item>
         <item>RUN</item>
         <item>M</item>
@@ -44,4 +44,7 @@
         <item>Error.</item>
         <item>Uncaught error type.</item>
     </string-array>
+
+    <string name="welcome">Welcome! <br />COMP2161 - Lab04 <br />Calculator App <br />Jesse Dean </string>
+    <string name="cont">CONTINUE</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.jessedean.calculator;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -22,15 +23,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Resources res;
 
     //Storage variables
-    String runningString = "";
     String calculationString = "";
-    String result;
+    String result = "";
+
+    //State variables
+    boolean isRegularOrder;
+    boolean hasMemory;
 
     final int maxDecimals = 14;
 
     String [] errorMessages;
     final String ERR = "ERR";
     String [] buttonText;
+
+    //Buttons that need to be accessed for running order of operations
+    Button buttonParLeft;
+    Button buttonParRight;
+    Button buttonOrder;
 
     //Symbols that use codes
     final char MULT = '\u00D7';
@@ -53,7 +62,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         calculator = new Calculator(maxDecimals, MULT, DIV, SQRT);
 
         setButtons();
+        buttonParLeft = findViewById(R.id.buttonParLeft);
+        buttonParRight = findViewById(R.id.buttonParRight);
+        buttonOrder = findViewById(R.id.buttonOrder);
         memoryIndicator.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        calculationString = savedInstanceState.getString("calculationString");
+        isRegularOrder = savedInstanceState.getBoolean("order");
+        hasMemory = savedInstanceState.getBoolean("hasMem");
+        result = savedInstanceState.getString("result");
+
+        if(hasMemory)
+            calculator.setMemory(savedInstanceState.getString("mem"));
+
+        if(isRegularOrder)
+            setOrder(Calculator.Order.regular);
+        else
+            setOrder(Calculator.Order.running);
+
+        if(!(calculationString == ""))
+            setDisplay(calculationString);
+        else
+            setDisplay(result);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("calculationString", calculationString);
+        outState.putString("result", result);
+
+        if(calculator.getOrder() == Calculator.Order.regular)
+            isRegularOrder = true;
+        else
+            isRegularOrder = false;
+        outState.putBoolean("order", isRegularOrder);
+
+        if(calculator.hasMemory()) {
+            hasMemory = true;
+            outState.putString("mem", calculator.getMemory());
+        }
+        else
+            hasMemory = false;
+        outState.putBoolean("hasMem", hasMemory);
     }
 
     @Override
@@ -132,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //Clear the calculation string
                 case R.id.buttonClear:
                     calculationString = "";
+                    result = "";
                     break;
 
                 //Delete only the most recently added character
@@ -142,30 +200,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 //Change the order of operations
                 case R.id.buttonOrder:
-                    calculator.toggleOrder();
+                    toggleOrder();
                     break;
 
                 //Memory functions
                 case R.id.buttonMem:
-                    if(calculationString == "")
-                        calculator.setMemory(result);
-                    else
+                    if(calculationString != "")
                         calculator.setMemory(calculationString);
+                    else if(result != "")
+                        calculator.setMemory(result);
                     break;
                 case R.id.buttonMemAdd:
-                    if(calculationString == "")
-                        calculator.memoryAdd(result);
-                    else
+                    if(calculationString != "")
                         calculator.memoryAdd(calculationString);
+                    else if(result != "")
+                        calculator.memoryAdd(result);
                     break;
                 case R.id.buttonMemSub:
-                    if(calculationString == "")
-                        calculator.memorySub(result);
-                    else
+                    if(calculationString != "")
                         calculator.memorySub(calculationString);
+                    else if(result != "")
+                        calculator.memorySub(result);
                     break;
                 case R.id.buttonMemRecall:
-                    calculationString = calculator.getMemory();
+                    calculationString += calculator.getMemory();
                     break;
             }
             //Update the display after each button press
@@ -226,6 +284,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         runningTotalDisplay.setText(str);
     }
 
+    //Toggles the order of operations
+    private void toggleOrder() {
+        if(calculator.getOrder() == Calculator.Order.regular)
+            setOrder(Calculator.Order.running);
+        else
+            setOrder(Calculator.Order.regular);
+    }
+
+    //Sets the order of operations explicitly
+    private void setOrder(Calculator.Order ord) {
+        if(ord == Calculator.Order.running) {
+            buttonParLeft.setEnabled(false);
+            buttonParRight.setEnabled(false);
+            buttonOrder.setText(res.getString(R.string.regular));
+            calculator.setOrder(Calculator.Order.running);
+        }
+        else {
+            buttonParLeft.setEnabled(true);
+            buttonParRight.setEnabled(true);
+            buttonOrder.setText(res.getString(R.string.running));
+            calculator.setOrder(Calculator.Order.regular);
+        }
+    }
+
     //Set up buttons
     private void setButtons() {
 
@@ -243,8 +325,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Operand modifiers
         Button buttonDecimal = findViewById(R.id.buttonDecimal);
         Button buttonNeg = findViewById(R.id.buttonNeg);
-        Button buttonParLeft = findViewById(R.id.buttonParLeft);
-        Button buttonParRight = findViewById(R.id.buttonParRight);
+        buttonParLeft = findViewById(R.id.buttonParLeft);
+        buttonParRight = findViewById(R.id.buttonParRight);
         //Operators
         Button buttonAdd = findViewById(R.id.buttonAdd);
         Button buttonSub = findViewById(R.id.buttonSub);
@@ -256,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Calculator functions
         Button buttonClear = findViewById(R.id.buttonClear);
         Button buttonBack = findViewById(R.id.buttonBack);
-        Button buttonOrder = findViewById(R.id.buttonOrder);
+        buttonOrder = findViewById(R.id.buttonOrder);
         //Memory functions
         Button buttonMem = findViewById(R.id.buttonMem);
         Button buttonMemAdd = findViewById(R.id.buttonMemAdd);
@@ -273,5 +355,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             buttons[i].setOnClickListener(this);
             buttons[i].setText(buttonText[i]);
         }
+
     }
 }

@@ -30,8 +30,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/memory"
             android:textColor="@color/slate"
+            android:text="@string/memory"
             tools:visibility="invisible" />
 
         <TextView
@@ -39,8 +39,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="10"
-            android:gravity="right|center_vertical"
             android:textColor="@color/slate"
+            android:gravity="right|center_vertical"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -49,9 +49,9 @@
         android:id="@+id/display"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="right|center_vertical"
+        android:layout_weight="2"
         android:textColor="@color/slate"
+        android:gravity="right|center_vertical"
         android:textSize="40sp" />
 
 
@@ -59,70 +59,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="7">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/buttonMem"
-                style="@style/calculatorButton"
- />
-
-            <Button
-                android:id="@+id/buttonMemAdd"
-                style="@style/calculatorButton" />
-
-            <Button
-                android:id="@+id/buttonMemSub"
-                style="@style/calculatorButton"/>
-
-            <Button
-                android:id="@+id/buttonMemRecall"
-                style="@style/calculatorButton" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/buttonOrder"
-                style="@style/calculatorButton" />
-
-            <Button
-                android:id="@+id/buttonSqrt"
-                style="@style/calculatorButton" />
-
-            <Button
-                android:id="@+id/buttonClear"
-                style="@style/calculatorButton" />
-
-            <Button
-                android:id="@+id/buttonBack"
-                style="@style/calculatorButton" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_weight="1">
-
-            <Button
-                android:id="@+id/buttonParLeft"
-                style="@style/calculatorButton" />
-
-            <Button
-                android:id="@+id/buttonParRight"
-                style="@style/calculatorButton" />
-
-            <Button
-                android:id="@+id/buttonExp"
-                style="@style/calculatorButton" />
-
-            <Button
-                android:id="@+id/buttonDiv"
-                style="@style/calculatorButton" />
-        </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
@@ -141,8 +77,21 @@
                 style="@style/calculatorButton" />
 
             <Button
-                android:id="@+id/buttonMult"
+                android:id="@+id/buttonDiv"
                 style="@style/calculatorButton" />
+
+            <Button
+                android:id="@+id/buttonOrder"
+                style="@style/calculatorButton" />
+
+            <Button
+                android:id="@+id/buttonClear"
+                style="@style/calculatorButton" />
+
+            <Button
+                android:id="@+id/buttonMem"
+                style="@style/calculatorButton" />
+
         </TableRow>
 
         <TableRow
@@ -162,8 +111,21 @@
                 style="@style/calculatorButton" />
 
             <Button
-                android:id="@+id/buttonSub"
+                android:id="@+id/buttonMult"
                 style="@style/calculatorButton" />
+
+            <Button
+                android:id="@+id/buttonParRight"
+                style="@style/calculatorButton" />
+
+            <Button
+                android:id="@+id/buttonBack"
+                style="@style/calculatorButton" />
+
+            <Button
+                android:id="@+id/buttonMemAdd"
+                style="@style/calculatorButton" />
+
         </TableRow>
 
         <TableRow
@@ -183,7 +145,19 @@
                 style="@style/calculatorButton" />
 
             <Button
-                android:id="@+id/buttonAdd"
+                android:id="@+id/buttonSub"
+                style="@style/calculatorButton" />
+
+            <Button
+                android:id="@+id/buttonParLeft"
+                style="@style/calculatorButton" />
+
+            <Button
+                android:id="@+id/buttonExp"
+                style="@style/calculatorButton" />
+
+            <Button
+                android:id="@+id/buttonMemSub"
                 style="@style/calculatorButton" />
         </TableRow>
 
@@ -204,7 +178,19 @@
                 style="@style/calculatorButton" />
 
             <Button
+                android:id="@+id/buttonAdd"
+                style="@style/calculatorButton" />
+
+            <Button
                 android:id="@+id/buttonEqual"
+                style="@style/calculatorButton" />
+
+            <Button
+                android:id="@+id/buttonSqrt"
+                style="@style/calculatorButton" />
+
+            <Button
+                android:id="@+id/buttonMemRecall"
                 style="@style/calculatorButton" />
         </TableRow>
 

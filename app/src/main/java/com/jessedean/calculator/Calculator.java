@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.EmptyStackException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 
 public class Calculator {
@@ -14,18 +15,18 @@ public class Calculator {
     private char div;
     private char sqrt;
 
-    //Error handling variables
     //Enums for order of operations and error types
     enum Order {regular, running}
     enum ErrorType {none, input, divZero, negSqrt, other};
 
-    private boolean isError = false;
     private ErrorType errorType;
     private Order order;
-
     private int maxDecimals;
     private BigDecimal memory;
+
+    private boolean isError = false;
     private boolean memoryModified = false;
+    private boolean disregardCalc = false;
 
     public Calculator(int maxDec, char m, char d, char sq) {
         maxDecimals = maxDec;
@@ -34,14 +35,22 @@ public class Calculator {
         div = d;
         sqrt = sq;
         order = Order.regular;
+        memory = BigDecimal.ZERO;
+    }
+
+    public String calculate(String calc) {
+        BigDecimal result = calculate(generatePostfix(calc));
+        if(disregardCalc) {
+            disregardCalc = false;
+            return calc;
+        }
+        else
+            return formatBigDecimal(result);
     }
 
 
     //Performs the calculation on the postfix expression
-    public String calculate(String calc) {
-
-        //Get the calculation, and convert it to postfix in list form
-        LinkedList<String> postfix = generatePostfix(calc);
+    private BigDecimal calculate(List<String> postfix) {
 
         BigDecimal finalResult;
         BigDecimal operationResult = BigDecimal.ZERO;
@@ -49,7 +58,9 @@ public class Calculator {
         Stack<BigDecimal> stack = new Stack<>();
 
         //Iterates through each item in the postfix list
-        for (String item : postfix) {
+        for (int i = 0; i < postfix.size(); i++) {
+
+            String item = postfix.get(i);
 
             //Push numbers onto the stack
             if(isNumber(item)) {
@@ -60,12 +71,71 @@ public class Calculator {
             //must be handled separately
             else if(item.charAt(0) == sqrt) {
 
+                //A running calculation style of order of operations doesn't work with
+                //the same methods of square roots, as it is a unary operator, so the
+                //running calculations try to calculate before there is sufficient input.
+                //This will always cause an input error before a square root sign, which
+                //is addressed here.
+                if(getOrder() == Order.running && errorType == ErrorType.input) {
+                    clearError();
+
+                    //If the square root sign is the last item on the list and is not preceded by
+                    //a number in the postfix list, set the flag to disregard the calculation for
+                    //now, and return an arbitrary value.
+                    if(postfix.get(postfix.size()-1).charAt(0) == sqrt && !isNumber(postfix.get(postfix.size()-2))) {
+                        disregardCalc = true;
+                        return BigDecimal.ZERO;
+                    }
+
+                    //Split the operation into three, with the square root operation marking the divide.
+                    LinkedList<String> subListA;
+                    LinkedList<String> subListB;
+                    LinkedList<String> subListC;
+                    String lastOperator = "";
+
+                    subListA = new LinkedList<String>(postfix.subList(0, i-1));
+                    subListB = new LinkedList<String>(postfix.subList(i-1, i+1));
+
+
+                    //If the first half is greater than three items, there will be one operator
+                    //that needs to be moved to the end of the expression.
+                    if(!isNumber(postfix.get(i-2))) {
+                        lastOperator = subListA.remove(subListA.size()-1);
+                    }
+
+                    //Calculate the result of the square root
+                    BigDecimal subCalc = calculate(subListB);
+
+                    //Add the result to the other half
+                    subListA.add(subCalc.toPlainString());
+
+                    //Add back the removed operator, if there is one
+                    subListA.add(lastOperator);
+
+                    //If the list goes beyond the square root sign, the remaining end is made into
+                    //a third list, to be added back one the square root in the middle has been
+                    //evaluated.
+                    if(postfix.size() > i+1) {
+                        subListC = new LinkedList<String>(postfix.subList(i + 1, postfix.size()));
+                        for (String str : subListC) {
+                            subListA.add(str);
+                        }
+                    }
+
+                    //Push the result onto the stack. This set of operations bypasses the regular
+                    //logic, as the evaluation took place in recursive calls to this function, so
+                    //we break out of the loop.
+                    stack.push(calculate(subListA));
+                    break;
+                }
+
                 try {
                     op1 = stack.pop();
+
+                    //Prevent square roots of negative numbers
                     if(op1.doubleValue() < BigDecimal.ZERO.doubleValue()) {
                         isError = true;
                         errorType = ErrorType.negSqrt;
-                        finalResult = BigDecimal.ZERO;
                     }
                     else {
                         //Calculate square root
@@ -83,7 +153,6 @@ public class Calculator {
                 catch(EmptyStackException e) {
                     isError = true;
                     errorType = ErrorType.input;
-                    finalResult = BigDecimal.ZERO;
                 }
             }
 
@@ -109,7 +178,6 @@ public class Calculator {
                         if (op2.doubleValue() == 0) {
                             isError = true;
                             errorType = ErrorType.divZero;
-                            finalResult = BigDecimal.ZERO;
                         }
                         else
                             operationResult = op1.divide(op2, maxDecimals, RoundingMode.HALF_UP);
@@ -125,12 +193,11 @@ public class Calculator {
                 catch(EmptyStackException e) {
                     isError = true;
                     errorType = ErrorType.input;
-                    finalResult = BigDecimal.ZERO;
                 }
             }
         }
         if(isError)
-            return "0";
+            return BigDecimal.ZERO;
         else {
             try {
                 finalResult = stack.pop();
@@ -139,7 +206,7 @@ public class Calculator {
                 errorType = ErrorType.other;
                 finalResult = BigDecimal.ZERO;
             }
-            return formatBigDecimal(finalResult);
+            return finalResult;
         }
     }
 
@@ -165,7 +232,13 @@ public class Calculator {
 
         //Stack for temporarily holding operators
         Stack<Character> stack = new Stack<>();
-        int length = str.length();
+
+        int length;
+
+        if(str != null)
+            length = str.length();
+        else
+            length = 0;
 
         //Loops through each character in the expression, sorting them to be added to the
         //postfix list.
@@ -200,9 +273,15 @@ public class Calculator {
                 //until the open parenthesis is reached, which is discarded.
             else if(c == ')')
             {
-                while (stack.peek() != '(')
-                    postfix.add(stack.pop().toString());
-                stack.pop();
+                try {
+                    while (stack.peek() != '(')
+                        postfix.add(stack.pop().toString());
+                    stack.pop();
+                }
+                catch(EmptyStackException e) {
+                    isError = true;
+                    errorType = ErrorType.input;
+                }
             }
 
             //Operators are pushed onto the stack if it is empty, or if the operator on top of the stack
@@ -264,7 +343,7 @@ public class Calculator {
 
     //Returns the number in memory
     public String getMemory() {
-        return memory.toString();
+        return formatBigDecimal(memory);
     }
 
     //Adds the given number to the number stored in memory
@@ -311,11 +390,8 @@ public class Calculator {
     }
 
     //Toggles the order of operations between running and regular
-    public void toggleOrder() {
-        if(order == Order.regular)
-            order = Order.running;
-        else
-            order = Order.regular;
+    public void setOrder(Order ord) {
+        order = ord;
     }
 
     //Returns the current order of operations
