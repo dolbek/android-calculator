@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Calculator</string>
 
+    <string name="running">RUN</string>
+    <string name="regular">REG</string>
+    <string name="memory">M</string>
+
     <string-array name="buttonText">
         <item>0</item>
         <item>1</item>
