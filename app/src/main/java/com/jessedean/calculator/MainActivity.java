@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //Storage variables
     String calculationString = "";
+    String running = "";
     String result = "";
 
     //State variables
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         isRegularOrder = savedInstanceState.getBoolean("order");
         hasMemory = savedInstanceState.getBoolean("hasMem");
         result = savedInstanceState.getString("result");
+        running = savedInstanceState.getString("running");
 
         if(hasMemory)
             calculator.setMemory(savedInstanceState.getString("mem"));
@@ -85,10 +87,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else
             setOrder(Calculator.Order.running);
 
-        if(!(calculationString == ""))
+        if(calculationString != "") {
             setDisplay(calculationString);
-        else
+            setRunningDisplay(running);
+        }
+        else {
             setDisplay(result);
+            setRunningDisplay(running);
+        }
     }
 
     @Override
@@ -97,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         outState.putString("calculationString", calculationString);
         outState.putString("result", result);
+        outState.putString("running", running);
 
         if(calculator.getOrder() == Calculator.Order.regular)
             isRegularOrder = true;
@@ -236,10 +243,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //Updates the display
     private void setDisplay(String string) {
-        String running = "";
+
         if(!calculator.hasError()) {
             totalDisplay.setText(string);
-            runningTotalDisplay.setText(calculationString);
+            if(calculationString != "")
+                running = calculationString;
+            runningTotalDisplay.setText(running);
 
             if(calculator.getOrder() == Calculator.Order.running) {
                 orderIndicator.setText(res.getString(R.string.running));
